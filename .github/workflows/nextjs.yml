@@ -7,7 +7,6 @@ name: Deploy Next.js site to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,6 +29,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get github repository name
+        id: github-repository
+        run: echo "name=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}" >> $GITHUB_OUTPUT
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -75,11 +77,11 @@ jobs:
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
-          NODE_ENV: production
+          ASSET_PREFIX: /${{ steps.github-repository.outputs.name }}
       - name: Static HTML export with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next export
         env:
-          NODE_ENV: production
+          ASSET_PREFIX: /${{ steps.github-repository.outputs.name }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
