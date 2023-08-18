@@ -11,7 +11,7 @@ type Props = {
 const CoverImage = ({ title, src, slug }: Props) => {
   const image = (
     <Image
-      src={`/nextjs-blog-starter-sandbox${src}`}
+      src={`${process.env.ASSET_PREFIX}${src}`}
       alt={`Cover Image for ${title}`}
       className={cn('shadow-sm w-full', {
         'hover:shadow-lg transition-shadow duration-200': slug,
